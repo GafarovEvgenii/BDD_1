@@ -10,38 +10,36 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class DashboardPage {
     private SelenideElement heading = $("[data-test-id=dashboard]");
+    private SelenideElement buttonFirst = $("[data-test-id='92df3f1c-a033-48e6-8390-206f6b1f56c0'] button");
+    private SelenideElement buttonSecond = $("[data-test-id='0f3f5c2a-249e-4c3d-8287-09f7a039391d'] button");
+
+    private ElementsCollection cards = $$(".list__item");
+    private final String balanceBefore = "баланс: ";
+    private final String balanceAfter = " р.";
 
     public DashboardPage() {
         heading.shouldBe(visible);
     }
 
-    private ElementsCollection cards = $$(".list__item");
-    private final String balanceStart = "баланс: ";
-    private final String balanceFinish = " р.";
-
-    public int getStartBalance() {
-        int startBalance = 10000;
-        return startBalance;
-    }
-
-    public int getFirstCardBalance() {
-        val text = cards.first().text();
-        return extractBalance(text);
-    }
-
-    public int getSecondCardBalance() {
-        val text = cards.last().text();
+    public int getCardBalance(int i) {
+        val text = cards.get(i).text();
         return extractBalance(text);
     }
 
     private int extractBalance(String text) {
-        val start = text.indexOf(balanceStart);
-        val finish = text.indexOf(balanceFinish);
-        val value = text.substring(start + balanceStart.length(), finish);
-        int balance = Integer.parseInt(value);
-        return balance;
-
+        val start = text.indexOf(balanceBefore);
+        val finish = text.indexOf(balanceAfter);
+        val value = text.substring(start + balanceBefore.length(), finish);
+        return Integer.parseInt(value);
     }
 
-    private ElementsCollection buttons = $$("button");
+    public CardPage personFirstCard() {
+        buttonFirst.click();
+        return new CardPage();
+    }
+
+    public CardPage personSecondCard() {
+        buttonSecond.click();
+        return new CardPage();
+    }
 }
